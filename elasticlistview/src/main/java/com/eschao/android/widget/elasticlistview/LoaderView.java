@@ -9,14 +9,14 @@ import android.widget.TextView;
 import com.eschao.android.widget.R;
 
 /**
- * The load footer view extends from ViewGroup to allow you customize your
- * content view
+ * The loader view extends from ViewGroup and allow you customize your
+ * loading content
  * <p>It is used in {@link ElasticListView} as a footer item to implement
- * loading operation through defined gesture</p>
+ * loading operation through pre-defined gestures</p>
  *
- * @author chao
+ * @author eschao
  */
-public class FooterView extends ViewGroup {
+public class LoaderView extends ViewGroup {
 
 	int 				mHeight;
 	int 				mMinHeight;
@@ -30,7 +30,7 @@ public class FooterView extends ViewGroup {
 	 *
 	 * @param context Android context
 	 */
-	public FooterView(Context context) {
+	public LoaderView(Context context) {
 		super(context);
 		init();
 	}
@@ -41,7 +41,7 @@ public class FooterView extends ViewGroup {
 	 * @param context	Android context
 	 * @param attrs		attributes of view
 	 */
-	public FooterView(Context context, AttributeSet attrs) {
+	public LoaderView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
@@ -53,7 +53,7 @@ public class FooterView extends ViewGroup {
 	 * @param attrs		Attributes of view
 	 * @param defStyle	Style of view
 	 */
-	public FooterView(Context context, AttributeSet attrs, int defStyle) {
+	public LoaderView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
 	}
@@ -127,7 +127,7 @@ public class FooterView extends ViewGroup {
 
 	/**
 	 * Adds child view
-	 * <p>LoadFooter only can contain one child view. The exception will be
+	 * <p>LoaderView only can contain one child view. The exception will be
 	 * raised if you add more than one </p>
 	 *
 	 * @param child Child view
@@ -136,7 +136,7 @@ public class FooterView extends ViewGroup {
 	public void addView(View child) {
 		final int childCount = getChildCount();
 		if (childCount > 0) {
-			throw new IllegalStateException("LoadFooter can only have one child"
+			throw new IllegalStateException("LoaderView can only have one child"
 					+ " view");
 		}
 		super.addView(child);
@@ -212,19 +212,21 @@ public class FooterView extends ViewGroup {
 	}
 
 	/**
-	 * Gets bounce height when header start bounce to invisible or minimum
+	 * Gets bounce height when view start bounce to invisible or minimum
 	 * height
 	 *
 	 * @return Bounce height
 	 */
 	public int getBounceHeight() {
-		if (mHeight > mMinHeight)
+		if (mHeight > mMinHeight) {
 			return mMinHeight - mHeight;
-
-		if (mIsLoading)
+		}
+		else if (mIsLoading) {
 			return 0;
-
-		return -mHeight;
+		}
+		else {
+			return -mHeight;
+		}
 	}
 
 	/**
@@ -239,7 +241,7 @@ public class FooterView extends ViewGroup {
 	/**
 	 * Can load?
 	 *
-	 * @return True if not loading state and height is bigger than minimum
+	 * @return True if state is not loading and height is bigger than minimum
 	 * 				height
 	 */
 	public boolean canLoad() {
@@ -331,7 +333,7 @@ public class FooterView extends ViewGroup {
 	 * <li>Loading: Loading is ongoing</li>
 	 * <li>EndLoading: Loading is finished</li>
 	 * </ul>
-	 * @author chao
+	 * @author eschao
 	 */
 	public static interface OnLoadStateListener {
 
@@ -347,7 +349,7 @@ public class FooterView extends ViewGroup {
 	/**
 	 * A default listener implementation for loading state change
 	 *
-	 * @author chao
+	 * @author eschao
 	 */
 	public static class DefaultLoadStateListener implements OnLoadStateListener
 	{
@@ -381,14 +383,14 @@ public class FooterView extends ViewGroup {
 	}
 
 	/**
-	 * Defines loading action for load footer
+	 * Defines loading action
 	 *
-	 * @author chao
+	 * @author eschao
 	 */
 	public static enum LoadAction {
 
 		/**
-		 * Click footer to perform loading
+		 * Click loaderView to perform loading
 		 */
 		CLICK_TO_LOAD,
 
@@ -398,7 +400,7 @@ public class FooterView extends ViewGroup {
 		RELEASE_TO_LOAD,
 
 		/**
-		 * Automatically perform loading once the footer is visible
+		 * Automatically perform loading once the loaderView is visible
 		 */
 		AUTO_LOAD,
 	}

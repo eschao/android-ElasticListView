@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file:///Volumes/Data/github/android-ElasticListView/android-ElasticListView.iml" filepath="/Volumes/Data/github/android-ElasticListView/android-ElasticListView.iml" />
+      <module fileurl="file:///Volumes/Data/github/android-ElasticListView/elasticlistview/elasticlistview.iml" filepath="/Volumes/Data/github/android-ElasticListView/elasticlistview/elasticlistview.iml" />
+      <module fileurl="file:///Volumes/Data/github/android-ElasticListView/sample/sample.iml" filepath="/Volumes/Data/github/android-ElasticListView/sample/sample.iml" />
+    </modules>
+  </component>
+</project>

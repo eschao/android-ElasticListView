@@ -18,7 +18,7 @@ import com.eschao.android.widget.R;
  *
  * @author chao
  */
-public class HeaderView extends ViewGroup {
+public class UpdaterView extends ViewGroup {
 
 	int 					mHeight;
 	int 					mMinHeight;
@@ -31,7 +31,7 @@ public class HeaderView extends ViewGroup {
 	 *
 	 * @param context Android context
 	 */
-	public HeaderView(Context context) {
+	public UpdaterView(Context context) {
 		super(context);
 		init();
 	}
@@ -42,7 +42,7 @@ public class HeaderView extends ViewGroup {
 	 * @param context	Android context
 	 * @param attrs		attributes of view
 	 */
-	public HeaderView(Context context, AttributeSet attrs) {
+	public UpdaterView(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
@@ -54,7 +54,7 @@ public class HeaderView extends ViewGroup {
 	 * @param attrs		Attributes of view
 	 * @param defStyle	Style of view
 	 */
-	public HeaderView(Context context, AttributeSet attrs, int defStyle) {
+	public UpdaterView(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
 	}

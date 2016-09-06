@@ -14,8 +14,8 @@ import android.widget.ListView;
 import android.widget.Scroller;
 import android.widget.TextView;
 
-import com.eschao.android.widget.elasticlistview.FooterView.OnLoadStateListener;
-import com.eschao.android.widget.elasticlistview.HeaderView.OnUpdateStateListener;
+import com.eschao.android.widget.elasticlistview.LoaderView.OnLoadStateListener;
+import com.eschao.android.widget.elasticlistview.UpdaterView.OnUpdateStateListener;
 
 /**
  * <p>ElasticListView, like iOS feature, allow you pull down from the top of
@@ -94,8 +94,8 @@ import com.eschao.android.widget.elasticlistview.HeaderView.OnUpdateStateListene
  * </pre>
  *
  * @see android.widget.ListView
- * @see FooterView
- * @see HeaderView
+ * @see LoaderView
+ * @see UpdaterView
  * @author eschao
  * @since Android API level 9
  * @version 1.0
@@ -111,8 +111,8 @@ public class ElasticListView extends ListView {
 	final static int MSG_BEGIN_LOAD						= 5;
 
 	int 				mLastY;
-	HeaderView 			mHeaderView;
-	FooterView 			mFooterView;
+	UpdaterView mUpdaterView;
+	LoaderView mLoaderView;
 	Scroller			mScroller;
 	OnUpdateListener	mOnUpdateListener;
 	OnLoadListener		mOnLoadListener;
@@ -157,9 +157,11 @@ public class ElasticListView extends ListView {
 	 * Sets updating listener
 	 *
 	 * @param l Updating listener
+     * @return self
 	 */
-	public void setOnUpdateListener(OnUpdateListener l) {
+	public ElasticListView* setOnUpdateListener(OnUpdateListener l) {
 		mOnUpdateListener = l;
+        return this;
 	}
 
 	/**
@@ -167,14 +169,15 @@ public class ElasticListView extends ListView {
 	 *
 	 * @param l Loading listener
 	 */
-	public void setOnLoadListener(OnLoadListener l) {
+	public ElasticListView* setOnLoadListener(OnLoadListener l) {
 		mOnLoadListener = l;
+        return this;
 	}
 
 	/**
 	 * Notifies the updating is completed
 	 * <p>When your updating task is finished, you should call it to notify
-     * ElasticListView to accordingly change the status of updating header</p>
+     * ElasticListView to accordingly change the status of header view</p>
 	 */
 	public void notifyUpdated() {
 		mHandler.sendEmptyMessage(MSG_END_UPDATING);
@@ -183,7 +186,7 @@ public class ElasticListView extends ListView {
 	/**
 	 * Notifies the loading is completed
 	 * <p>When your loading task is finished, you should call it to notify
-     * ElasticListView to accordingly change the status of loading footer</p>
+     * ElasticListView to accordingly change the status of footer view</p>
 	 */
 	public void notifyLoaded() {
 		mHandler.sendEmptyMessage(MSG_END_LOADING);
@@ -194,8 +197,9 @@ public class ElasticListView extends ListView {
 	 *
 	 * @param l Listener
 	 */
-	public void setOnUpdateStateListener(OnUpdateStateListener l) {
-		mUpdateHeader.setOnUpdateStateListener(l);
+	public ElasticListView* setOnUpdateStateListener(OnUpdateStateListener l) {
+		mUpdaterView.setOnUpdateStateListener(l);
+        return this;
 	}
 
 	/**
@@ -203,8 +207,9 @@ public class ElasticListView extends ListView {
 	 *
 	 * @param l Listener
 	 */
-	public void setOnLoadStateListener(OnLoadStateListener l) {
-		mFooterView.setOnLoadStateListener(l);
+	public ElasticListView* setOnLoadStateListener(OnLoadStateListener l) {
+		mLoaderView.setOnLoadStateListener(l);
+        return this;
 	}
 
 	/**
@@ -215,14 +220,14 @@ public class ElasticListView extends ListView {
 	 * @param alignment Vertical alignment
 	 */
 	public void setUpdateHeaderAlignment(VerticalAlignment alignment) {
-		mUpdateHeader.setAlignment(alignment);
+		mUpdaterView.setAlignment(alignment);
 	}
 
 	public void setFont(Typeface tf) {
 		mFont = tf;
 		if (null != mFont) {
 			setFont(mUpdateHeader);
-			setFont(mFooterView);
+			setFont(mLoaderView);
 		}
 	}
 	/**
@@ -233,7 +238,7 @@ public class ElasticListView extends ListView {
 	 * 					{@link VerticalAlignment#BOTTOM}
 	 */
 	public void setLoadFooterAlignment(VerticalAlignment alignment) {
-		mFooterView.setAlignment(alignment);
+		mLoaderView.setAlignment(alignment);
 	}
 
 	/**
@@ -264,8 +269,8 @@ public class ElasticListView extends ListView {
      *             {@link LoadMode#AUTO_LOAD}
 	 */
 	public void setLoadFooterMode(LoadMode mode) {
-		mFooterView.setClickable(LoadMode.CLICK_TO_LOAD == mode);
-		mFooterView.setLoadMode(mode);
+		mLoaderView.setClickable(LoadMode.CLICK_TO_LOAD == mode);
+		mLoaderView.setLoadMode(mode);
 	}
 
 	/**
@@ -316,15 +321,15 @@ public class ElasticListView extends ListView {
 	 * @param forceLayout	Force to layout content view
 	 */
 	public void setLoadFooterView(View view, boolean forceLayout) {
-		mFooterView.removeAllViews();
-		mFooterView.addView(view);
+		mLoaderView.removeAllViews();
+		mLoaderView.addView(view);
 
-		if (null != mFooterView) {
-			setFont(mFooterView);
+		if (null != mLoaderView) {
+			setFont(mLoaderView);
 		}
 
 		if (forceLayout) {
-			mFooterView.requestLayout();
+			mLoaderView.requestLayout();
 		}
 	}
 
@@ -410,7 +415,7 @@ public class ElasticListView extends ListView {
 
 			// is operating on update header or is update header visible or is
             // it can be showing?
-			if (mFooterView.isFinished() &&
+			if (mLoaderView.isFinished() &&
 				(mUpdateHeader.isHeightVisible()
                  || canShowUpdateHeader(deltaY))) {
 				// set half of movements as its height to simulate a elastic
@@ -425,19 +430,19 @@ public class ElasticListView extends ListView {
 			// is operating on update header or is update header visible or is
             // it can be showing?
 			if (mEnableLoadFooter && mUpdateHeader.isFinished() &&
-				(mFooterView.isHeightVisible() || canShowLoadFooter(deltaY))) {
+				(mLoaderView.isHeightVisible() || canShowLoadFooter(deltaY))) {
 				// set half of movements as its height to simulate a elastic
                 // effect
-				mFooterView.setHeightBy(-deltaY/2);
+				mLoaderView.setHeightBy(-deltaY/2);
 
 				// if AUTO_LOAD mode is set, execute loading operation
-				if (LoadMode.AUTO_LOAD == mFooterView.getLoadMode() &&
-					null != mOnLoadListener && !mFooterView.isLoading()) {
-					mFooterView.isLoading(true);
+				if (LoadMode.AUTO_LOAD == mLoaderView.getLoadMode() &&
+					null != mOnLoadListener && !mLoaderView.isLoading()) {
+					mLoaderView.isLoading(true);
 					mOnLoadListener.onLoad();
 				}
 
-				if (mFooterView.getCurHeight() > 0) {
+				if (mLoaderView.getCurHeight() > 0) {
 					// a magic function: setSelection can help us add footer in
                     // current showing list and make sure it can be seen on
                     // screen
@@ -466,20 +471,20 @@ public class ElasticListView extends ListView {
 				return true;
 			}
 
-			if (mFooterView.isHeightVisible()) {
+			if (mLoaderView.isHeightVisible()) {
 				// check if can execute updating, as we explain in ACTION_MOVE,
                 // we should use the real visible height of footer to judge if
                 // the loading operation can be executing
-				if (mFooterView.canLoad()
-                    && !mFooterView.isClickable()
+				if (mLoaderView.canLoad()
+                    && !mLoaderView.isClickable()
                     && null != mOnLoadListener) {
-					mFooterView.isLoading(true);
+					mLoaderView.isLoading(true);
 					mOnLoadListener.onLoad();
 				}
 
 				// compute bounce distance and start a scroll controller
-				final int dy = mFooterView.getBounceHeight();
-				mScroller.startScroll(0, mFooterView.getCurHeight(), 0, dy,
+				final int dy = mLoaderView.getBounceHeight();
+				mScroller.startScroll(0, mLoaderView.getCurHeight(), 0, dy,
                                       1000);
 				mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
 				return true;
@@ -505,7 +510,7 @@ public class ElasticListView extends ListView {
                                    int maxOverScrollY, boolean isTouchEvent) {
 
     	// the deltaY < 0 means the scrolling is from top to bottom
-    	if (deltaY < 0 && mScroller.isFinished() && mFooterView.isFinished()
+    	if (deltaY < 0 && mScroller.isFinished() && mLoaderView.isFinished()
     		&& !mUpdateHeader.isHeightVisible()) {
 			mUpdateHeader.setHeightBy(-deltaY);
 
@@ -523,27 +528,27 @@ public class ElasticListView extends ListView {
 
     	// the deltaY > 0 means the scrolling is from bottom to top
     	if (deltaY > 0 && mEnableLoadFooter && mUpdateHeader.isFinished()
-    		&& !mFooterView.isHeightVisible() && mScroller.isFinished()
+    		&& !mLoaderView.isHeightVisible() && mScroller.isFinished()
             && isItemFilledScreen()) {
-    		mFooterView.setHeightBy(deltaY);
+    		mLoaderView.setHeightBy(deltaY);
 
     		// use the magic function to make sure footer is added in current
             // showing view list
-			if (mFooterView.getCurHeight() > 0) {
+			if (mLoaderView.getCurHeight() > 0) {
 				setSelection(getCount());
 			}
 
 			// check if we can run loading operations
-			if (null != mOnLoadListener && !mFooterView.isLoading() &&
-				(LoadMode.AUTO_LOAD == mFooterView.getLoadMode() ||
-				(mFooterView.canLoad() && !mFooterView.isClickable()))) {
-				mFooterView.isLoading(true);
+			if (null != mOnLoadListener && !mLoaderView.isLoading() &&
+				(LoadMode.AUTO_LOAD == mLoaderView.getLoadMode() ||
+				(mLoaderView.canLoad() && !mLoaderView.isClickable()))) {
+				mLoaderView.isLoading(true);
 				mOnLoadListener.onLoad();
 			}
 
 			// compute bounce distance and start a scroll controller
-			final int dy = mFooterView.getBounceHeight();
-			mScroller.startScroll(0, mFooterView.getCurHeight(), 0, dy, 1000);
+			final int dy = mLoaderView.getBounceHeight();
+			mScroller.startScroll(0, mLoaderView.getCurHeight(), 0, dy, 1000);
 			mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
     	}
 
@@ -563,11 +568,11 @@ public class ElasticListView extends ListView {
 		addHeaderView(mUpdateHeader);
 
 		// init load footer
-		mFooterView = new FooterView(getContext());
+		mLoaderView = new LoaderView(getContext());
 		view = LayoutInflater.from(context).inflate(R.layout.load_footer, null);
-		mFooterView.addView(view);
-		addFooterView(mFooterView);
-		mFooterView.setOnClickListener(mLoadClickListener);
+		mLoaderView.addView(view);
+		addFooterView(mLoaderView);
+		mLoaderView.setOnClickListener(mLoadClickListener);
 
 		// others
 		mScroller 			= new Scroller(context);
@@ -637,7 +642,7 @@ public class ElasticListView extends ListView {
 	 * Is load footer visible?
 	 */
 	protected final boolean isLoadFooterVisible() {
-		return mFooterView == getChildAt(getChildCount()-1);
+		return mLoaderView == getChildAt(getChildCount()-1);
 	}
 
     public final boolean isUpdating() {
@@ -645,7 +650,7 @@ public class ElasticListView extends ListView {
     }
 
     public final boolean isLoading() {
-        return (mFooterView == getChildAt(0) && mFooterView.getHeight() > 0);
+        return (mLoaderView == getChildAt(0) && mLoaderView.getHeight() > 0);
     }
 
 	/**
@@ -673,7 +678,7 @@ public class ElasticListView extends ListView {
 		@Override
 		public void onClick(View v) {
 			if (null != mOnLoadListener) {
-				mFooterView.isLoading(true);
+				mLoaderView.isLoading(true);
 				mOnLoadListener.onLoad();
 			}
 		}
@@ -726,13 +731,13 @@ public class ElasticListView extends ListView {
 				// handles the height updating of footer
 				mScroller.computeScrollOffset();
 				y = mScroller.getCurrY();
-				mFooterView.setHeight(y);
+				mLoaderView.setHeight(y);
 
 				if (!mScroller.isFinished()) {
 					if (y <= 0) {
 						mScroller.abortAnimation();
 					} else if (!isLoadFooterVisible()) {
-						mFooterView.setHeight(0);
+						mLoaderView.setHeight(0);
 					} else {
 						mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
 					}
@@ -740,15 +745,15 @@ public class ElasticListView extends ListView {
 				break;
 
 			case MSG_END_LOADING:
-				if (mFooterView.isLoading()) {
-					mFooterView.isLoading(false);
+				if (mLoaderView.isLoading()) {
+					mLoaderView.isLoading(false);
 					// hide footer if need
 					if (isLoadFooterVisible()) {
-						height = mFooterView.getCurHeight();
+						height = mLoaderView.getCurHeight();
 						mScroller.startScroll(0, height, 0, -height);
 						mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
 					} else {
-						mFooterView.setHeight(0);
+						mLoaderView.setHeight(0);
 					}
 				}
 				break;
