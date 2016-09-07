@@ -8,16 +8,16 @@
         <option name="gradleHome" value="$APPLICATION_HOME_DIR$/gradle/gradle-2.14.1" />
         <option name="modules">
           <set>
-            <option value="/Volumes/Data/github/android-ElasticListView" />
-            <option value="/Volumes/Data/github/android-ElasticListView/elasticlistview" />
-            <option value="/Volumes/Data/github/android-ElasticListView/sample" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/elasticlistview" />
+            <option value="$PROJECT_DIR$/sample" />
           </set>
         </option>
         <option name="myModules">
           <set>
-            <option value="/Volumes/Data/github/android-ElasticListView" />
-            <option value="/Volumes/Data/github/android-ElasticListView/elasticlistview" />
-            <option value="/Volumes/Data/github/android-ElasticListView/sample" />
+            <option value="$PROJECT_DIR$" />
+            <option value="$PROJECT_DIR$/elasticlistview" />
+            <option value="$PROJECT_DIR$/sample" />
           </set>
         </option>
       </GradleProjectSettings>

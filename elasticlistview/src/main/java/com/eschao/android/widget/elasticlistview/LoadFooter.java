@@ -1,22 +1,39 @@
+/*
+ * Copyright (C) 2016 eschao <esc.chao@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.eschao.android.widget.elasticlistview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import com.eschao.android.widget.R;
-
 /**
- * The loader view extends from ViewGroup and allow you customize your
+ * The load header extends from ViewGroup and allows you customize your
  * loading content
  * <p>It is used in {@link ElasticListView} as a footer item to implement
  * loading operation through pre-defined gestures</p>
  *
  * @author eschao
  */
-public class LoaderView extends ViewGroup {
+public class LoadFooter extends ViewGroup {
+
+	private final static String TAG = "LoadFooter";
 
 	int 				mHeight;
 	int 				mMinHeight;
@@ -30,7 +47,7 @@ public class LoaderView extends ViewGroup {
 	 *
 	 * @param context Android context
 	 */
-	public LoaderView(Context context) {
+	public LoadFooter(Context context) {
 		super(context);
 		init();
 	}
@@ -41,7 +58,7 @@ public class LoaderView extends ViewGroup {
 	 * @param context	Android context
 	 * @param attrs		attributes of view
 	 */
-	public LoaderView(Context context, AttributeSet attrs) {
+	public LoadFooter(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
@@ -53,7 +70,7 @@ public class LoaderView extends ViewGroup {
 	 * @param attrs		Attributes of view
 	 * @param defStyle	Style of view
 	 */
-	public LoaderView(Context context, AttributeSet attrs, int defStyle) {
+	public LoadFooter(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
 	}
@@ -67,8 +84,10 @@ public class LoaderView extends ViewGroup {
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		View view = getChildView();
-		if (null == view)
+		if (null == view) {
+			Log.w(TAG, "No child view!");
 			return;
+		}
 
 		// get measured width and height
 		int childWidth 	= view.getMeasuredWidth();
@@ -118,17 +137,21 @@ public class LoaderView extends ViewGroup {
 	 * @return Child view
 	 */
 	public View getChildView() {
-		int count = getChildCount();
-		if (count > 0)
+		if (getChildCount() > 0) {
 			return getChildAt(0);
-
-		return null;
+		}
+		else {
+			return null;
+		}
 	}
 
 	/**
 	 * Adds child view
 	 * <p>LoaderView only can contain one child view. The exception will be
 	 * raised if you add more than one </p>
+     * <strong>Don't use it to customize your content view, please use
+     * {@link #setContentView(View, boolean)} to set</strong>
+     * </p>
 	 *
 	 * @param child Child view
 	 */
@@ -136,10 +159,38 @@ public class LoaderView extends ViewGroup {
 	public void addView(View child) {
 		final int childCount = getChildCount();
 		if (childCount > 0) {
-			throw new IllegalStateException("LoaderView can only have one child"
-					+ " view");
+			throw new IllegalStateException("LoaderView can only have one "
+					+ "child view");
 		}
 		super.addView(child);
+	}
+
+    /**
+     * Customizes your content view of load footer
+     *
+     * @param resId			Resource id of content view
+     * @param forceLayout	Force to layout content view
+     */
+	public void setContentView(int resId, boolean forceLayout) {
+		View view = LayoutInflater.from(getContext()).inflate(resId, null);
+		setContentView(view, forceLayout);
+	}
+
+    /**
+     * Customizes your content view of load footer
+     *
+     * @param view			Content root view
+     * @param forceLayout	Force to layout content view
+     */
+	public LoadFooter setContentView(View view, boolean forceLayout) {
+		removeAllViews();
+		addView(view);
+
+		if (forceLayout) {
+			requestLayout();
+		}
+
+        return this;
 	}
 
 	/**
@@ -148,9 +199,10 @@ public class LoaderView extends ViewGroup {
 	 * @see VerticalAlignment
 	 * @param alignment The vertical alignment of content view
 	 */
-	public void setAlignment(VerticalAlignment alignment) {
+	public LoadFooter setAlignment(VerticalAlignment alignment) {
 		mAlignment = alignment;
 		requestLayout();
+		return this;
 	}
 
 	/**
@@ -158,11 +210,11 @@ public class LoaderView extends ViewGroup {
 	 *
 	 * @param height New height of header
 	 */
-	public void setHeight(int height) {
+	protected void setHeight(int height) {
 		mHeight = height;
-		if (mHeight < 0)
+		if (mHeight < 0) {
 			mHeight = 0;
-
+		}
 		requestLayout();
 	}
 
@@ -171,20 +223,23 @@ public class LoaderView extends ViewGroup {
 	 *
 	 * @param offsetY Height offset
 	 */
-	public void setHeightBy(int offsetY) {
+	protected void setHeightBy(int offsetY) {
 		final int oldHeight = mHeight;
 		mHeight += offsetY;
-		if (mHeight < 0)
+		if (mHeight < 0) {
 			mHeight = 0;
+		}
 
 		if (LoadAction.AUTO_LOAD == mLoadAction) {
 			if (mHeight < mMinHeight) {
 				mHeight = mMinHeight;
 			}
-		} else if (!mIsLoading && null != mOnLoadStateListener) {
+		}
+        else if (!mIsLoading && null != mOnLoadStateListener) {
 			if (mHeight > mMinHeight) {
-				mOnLoadStateListener.onPreRelease(getChildView());
-			} else if ((oldHeight <= 0 && mHeight > 0) ||
+				mOnLoadStateListener.onWillRelease(getChildView());
+			}
+            else if ((oldHeight <= 0 && mHeight > 0) ||
 					  (oldHeight > mMinHeight && mHeight <= mMinHeight)) {
 				mOnLoadStateListener.onPullingUp(getChildView());
 			}
@@ -198,7 +253,7 @@ public class LoaderView extends ViewGroup {
 	 *
 	 * @return Current height
 	 */
-	public int getCurHeight() {
+	protected int getCurHeight() {
 		return mHeight;
 	}
 
@@ -207,7 +262,7 @@ public class LoaderView extends ViewGroup {
 	 *
 	 * @return Minimum height
 	 */
-	public int getMinHeight() {
+	protected int getMinHeight() {
 		return mMinHeight;
 	}
 
@@ -217,7 +272,7 @@ public class LoaderView extends ViewGroup {
 	 *
 	 * @return Bounce height
 	 */
-	public int getBounceHeight() {
+	protected int getBounceHeight() {
 		if (mHeight > mMinHeight) {
 			return mMinHeight - mHeight;
 		}
@@ -234,7 +289,7 @@ public class LoaderView extends ViewGroup {
 	 *
 	 * @return True if height is bigger than 0
 	 */
-	public boolean isHeightVisible() {
+	protected boolean isHeightVisible() {
 		return mHeight > 0;
 	}
 
@@ -262,18 +317,20 @@ public class LoaderView extends ViewGroup {
 	 *
 	 * @param isLoading True if loading is ongoing
 	 */
-	public void isLoading(boolean isLoading) {
+	public LoadFooter setLoading(boolean isLoading) {
 		final boolean old = mIsLoading;
 		mIsLoading = isLoading;
 
 		if (null != mOnLoadStateListener && old != mIsLoading) {
 			if (mIsLoading) {
 				mOnLoadStateListener.onLoading(getChildView());
-			} else {
-				mOnLoadStateListener.onEndLoading(getChildView());
+			}
+            else {
+				mOnLoadStateListener.onDidLoad(getChildView());
 			}
 		}
 
+		return this;
 	}
 
 	/**
@@ -288,8 +345,9 @@ public class LoaderView extends ViewGroup {
 	 *
 	 * @param l Listener
 	 */
-	public void setOnLoadStateListener(OnLoadStateListener l) {
+	public LoadFooter setOnLoadStateListener(OnLoadStateListener l) {
 		mOnLoadStateListener = l;
+		return this;
 	}
 
 	/**
@@ -308,8 +366,10 @@ public class LoaderView extends ViewGroup {
 	 * @see LoadAction
 	 * @param mode Load action
 	 */
-	public void setLoadAction(LoadAction action) {
+	public LoadFooter setLoadAction(LoadAction action) {
+		setClickable(action == LoadAction.CLICK_TO_LOAD);
 		mLoadAction = action;
+		return this;
 	}
 
 	/**
@@ -328,10 +388,10 @@ public class LoaderView extends ViewGroup {
 	 * <ul>
 	 * <li>Pulling Up: When you're pulling up the footer from the bottom of
 	 * list</li>
-	 * <li>PreRelease: When the height of footer is enough high to release your
+	 * <li>WillRelease: When the height of footer is enough high to release your
 	 * finger for loading</li>
 	 * <li>Loading: Loading is ongoing</li>
-	 * <li>EndLoading: Loading is finished</li>
+	 * <li>DidLoad: Loading is finished</li>
 	 * </ul>
 	 * @author eschao
 	 */
@@ -339,11 +399,11 @@ public class LoaderView extends ViewGroup {
 
 		public void onPullingUp(View root);
 
-		public void onPreRelease(View root);
+		public void onWillRelease(View root);
 
 		public void onLoading(View root);
 
-		public void onEndLoading(View root);
+		public void onDidLoad(View root);
 	}
 
 	/**
@@ -359,11 +419,11 @@ public class LoaderView extends ViewGroup {
 			progress.setVisibility(View.GONE);
 
 			TextView text = (TextView)root.findViewById(R.id.load_text);
-			text.setText("Load More...");
+			text.setText(R.string.loading_more);
 		}
 
 		@Override
-		public void onPreRelease(View root) {
+		public void onWillRelease(View root) {
 			onPullingUp(root);
 		}
 
@@ -373,11 +433,11 @@ public class LoaderView extends ViewGroup {
 			progress.setVisibility(View.VISIBLE);
 
 			TextView text = (TextView)root.findViewById(R.id.load_text);
-			text.setText("Loading ......");
+			text.setText(R.string.loading);
 		}
 
 		@Override
-		public void onEndLoading(View root) {
+		public void onDidLoad(View root) {
 			onPullingUp(root);
 		}
 	}

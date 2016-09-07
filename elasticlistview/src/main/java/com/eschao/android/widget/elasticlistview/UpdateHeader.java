@@ -1,24 +1,41 @@
+/*
+ * Copyright (C) 2016 eschao <esc.chao@gmail.com>
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.eschao.android.widget.elasticlistview;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.RotateAnimation;
 import android.widget.TextView;
 
-import com.eschao.android.widget.R;
-
 /**
- * The update header view extends from ViewGroup to allow you customize your
+ * The update header view extends from ViewGroup and allows you customize your
  * content view
  * <p>It is used in {@link ElasticListView} as a header item to implement
  * updating operation through defined gesture</p>
  *
  * @author chao
  */
-public class UpdaterView extends ViewGroup {
+public class UpdateHeader extends ViewGroup {
+
+	private final static String TAG = "UpdateHeader";
 
 	int 					mHeight;
 	int 					mMinHeight;
@@ -31,7 +48,7 @@ public class UpdaterView extends ViewGroup {
 	 *
 	 * @param context Android context
 	 */
-	public UpdaterView(Context context) {
+	public UpdateHeader(Context context) {
 		super(context);
 		init();
 	}
@@ -42,7 +59,7 @@ public class UpdaterView extends ViewGroup {
 	 * @param context	Android context
 	 * @param attrs		attributes of view
 	 */
-	public UpdaterView(Context context, AttributeSet attrs) {
+	public UpdateHeader(Context context, AttributeSet attrs) {
 		super(context, attrs);
 		init();
 	}
@@ -54,7 +71,7 @@ public class UpdaterView extends ViewGroup {
 	 * @param attrs		Attributes of view
 	 * @param defStyle	Style of view
 	 */
-	public UpdaterView(Context context, AttributeSet attrs, int defStyle) {
+	public UpdateHeader(Context context, AttributeSet attrs, int defStyle) {
 		super(context, attrs, defStyle);
 		init();
 	}
@@ -68,8 +85,10 @@ public class UpdaterView extends ViewGroup {
 	@Override
 	protected void onLayout(boolean changed, int l, int t, int r, int b) {
 		View view = getChildView();
-		if (null == view)
+		if (null == view) {
+			Log.w(TAG, "No child view!");
 			return;
+		}
 
 		// get measured width and height
 		int childWidth 	= view.getMeasuredWidth();
@@ -120,17 +139,22 @@ public class UpdaterView extends ViewGroup {
 	 * @return Child view
 	 */
 	public View getChildView() {
-		int count = getChildCount();
-		if (count > 0)
+		if (getChildCount() > 0) {
 			return getChildAt(0);
-
-		return null;
+		}
+		else {
+			return null;
+		}
 	}
 
 	/**
 	 * Adds child view
 	 * <p>UpdateHeader only can contain one child view. The exception will be
-	 * raised if you add more than one </p>
+	 * raised if you add more than one.</p>
+     * <p>
+     * <strong>Don't use it to customize your content view, please use
+     * {@link #setContentView(View, boolean)} to set</strong>
+     * </p>
 	 *
 	 * @param child Child view
 	 */
@@ -138,10 +162,38 @@ public class UpdaterView extends ViewGroup {
 	public void addView(View child) {
 		final int childCount = getChildCount();
 		if (childCount > 0) {
-			throw new IllegalStateException("UpdateHeader: Can only have one " +
-					"child view");
+			throw new IllegalStateException(TAG + ": Can only have one "
+					+ "child view");
 		}
 		super.addView(child);
+	}
+
+    /**
+     * Customizes your content view of update header
+     *
+     * @param resId			Resource id of content view
+     * @param forceLayout	Force to layout content view
+     */
+	public void setContentView(int resId, boolean forceLayout) {
+		View view = LayoutInflater.from(getContext()).inflate(resId, null);
+		setContentView(view, forceLayout);
+	}
+
+    /**
+     * Customizes your content view of update header
+     *
+     * @param view			Content root view
+     * @param forceLayout	Force to layout content view
+     */
+	public UpdateHeader setContentView(View view, boolean forceLayout) {
+		removeAllViews();
+		addView(view);
+
+		if (forceLayout) {
+			requestLayout();
+		}
+
+        return this;
 	}
 
 	/**
@@ -150,9 +202,10 @@ public class UpdaterView extends ViewGroup {
 	 * @see VerticalAlignment
 	 * @param alignment The vertical alignment of content view
 	 */
-	public void setAlignment(VerticalAlignment alignment) {
+	public UpdateHeader setAlignment(VerticalAlignment alignment) {
 		mAlignment = alignment;
 		requestLayout();
+		return this;
 	}
 
 	/**
@@ -160,7 +213,7 @@ public class UpdaterView extends ViewGroup {
 	 *
 	 * @param height New height of header
 	 */
-	public void setHeight(int height) {
+	protected void setHeight(int height) {
 		mHeight = height;
 		if (mHeight <= 0) {
 			mHeight = 0;
@@ -174,7 +227,7 @@ public class UpdaterView extends ViewGroup {
 	 *
 	 * @param offsetY Height offset
 	 */
-	public void setHeightBy(int offsetY) {
+	protected void setHeightBy(int offsetY) {
 		final int old = mHeight;
 
 		mHeight += offsetY;
@@ -186,9 +239,10 @@ public class UpdaterView extends ViewGroup {
 		if (!mIsUpdating && null != mOnUpdateStateListener) {
 			// from PullDown state to PreRelease state
 			if (mHeight > mMinHeight && old <= mMinHeight) {
-				mOnUpdateStateListener.onPreRelease(getChildView());
+				mOnUpdateStateListener.onWillRelease(getChildView());
+			}
 			// enter PullDown state
-			} else if ((old <= 0 && mHeight > 0) ||
+			else if ((old <= 0 && mHeight > 0) ||
 					  (old > mMinHeight && mHeight <= mMinHeight)) {
 				mOnUpdateStateListener.onPullingDown(getChildView());
 			}
@@ -203,11 +257,13 @@ public class UpdaterView extends ViewGroup {
 	 *
 	 * @return Bounce height
 	 */
-	public int getBounceHeight() {
-		if (mHeight >= mMinHeight && mIsUpdating)
-			return mMinHeight-mHeight;
-
-		return -mHeight;
+	protected int getBounceHeight() {
+		if (mHeight >= mMinHeight && mIsUpdating) {
+			return mMinHeight - mHeight;
+		}
+		else {
+			return -mHeight;
+		}
 	}
 
 	/**
@@ -216,7 +272,7 @@ public class UpdaterView extends ViewGroup {
 	 * @return True if not updating state and height is bigger than minimum
 	 * height
 	 */
-	public boolean canUpdate() {
+	protected boolean canUpdate() {
 		return !mIsUpdating && mHeight > mMinHeight;
 	}
 
@@ -225,7 +281,7 @@ public class UpdaterView extends ViewGroup {
 	 *
 	 * @return Current height
 	 */
-	public int getCurHeight() {
+	protected int getCurHeight() {
 		return mHeight;
 	}
 
@@ -234,7 +290,7 @@ public class UpdaterView extends ViewGroup {
 	 *
 	 * @return Minimum height
 	 */
-	public int getMinHeight() {
+	protected int getMinHeight() {
 		return mMinHeight;
 	}
 
@@ -243,7 +299,7 @@ public class UpdaterView extends ViewGroup {
 	 *
 	 * @return True if height is bigger than 0
 	 */
-	public boolean isHeightVisible() {
+	protected boolean isHeightVisible() {
 		return mHeight > 0;
 	}
 
@@ -261,21 +317,23 @@ public class UpdaterView extends ViewGroup {
 	 *
 	 * @param isUpdating True if updating is ongoing
 	 */
-	public void isUpdating(boolean isUpdating) {
+	public UpdateHeader setUpdating(boolean isUpdating) {
 		final boolean old = mIsUpdating;
 		mIsUpdating = isUpdating;
 
 		// handle state change event
 		if (null != mOnUpdateStateListener && old != mIsUpdating) {
+			// from willRelease to Updating
 			if (mIsUpdating) {
-				// from PreRelease to Updating
 				mOnUpdateStateListener.onUpdating(getChildView());
-			} else {
-				// from Updating to EndUpdating
-				mOnUpdateStateListener.onEndUpdating(getChildView());
+			}
+			// from Updating to didUpdate
+			else {
+				mOnUpdateStateListener.onDidUpdate(getChildView());
 			}
 		}
 
+		return this;
 	}
 
 	/**
@@ -283,8 +341,9 @@ public class UpdaterView extends ViewGroup {
 	 *
 	 * @param l Listener
 	 */
-	public void setOnUpdateStateListener(OnUpdateStateListener l) {
+	public UpdateHeader setOnUpdateStateListener(OnUpdateStateListener l) {
 		mOnUpdateStateListener = l;
+		return this;
 	}
 
 	/**
@@ -325,10 +384,10 @@ public class UpdaterView extends ViewGroup {
 		public void onPullingDown(View root);
 
 		/**
-		 * Prepare release
+		 * Will release
 		 * @param root Root view of header content
 		 */
-		public void onPreRelease(View root);
+		public void onWillRelease(View root);
 
 		/**
 		 * Updating
@@ -337,10 +396,10 @@ public class UpdaterView extends ViewGroup {
 		public void onUpdating(View root);
 
 		/**
-		 * End updating
+		 * Did update
 		 * @param root root view of header content
 		 */
-		public void onEndUpdating(View root);
+		public void onDidUpdate(View root);
 	}
 
 	/**
@@ -374,7 +433,7 @@ public class UpdaterView extends ViewGroup {
 		@Override
 		public void onPullingDown(View root) {
 			TextView text = (TextView)root.findViewById(R.id.update_text);
-			text.setText("Pull down to refresh...");
+			text.setText(R.string.pulldown_to_refresh);
 
 			View arrow = root.findViewById(R.id.update_arrow);
 			if (null != arrow) {
@@ -384,9 +443,9 @@ public class UpdaterView extends ViewGroup {
 		}
 
 		@Override
-		public void onPreRelease(View root) {
+		public void onWillRelease(View root) {
 			TextView text = (TextView)root.findViewById(R.id.update_text);
-			text.setText("Release to refresh...");
+			text.setText(R.string.release_to_refresh);
 
 			View arrow = root.findViewById(R.id.update_arrow);
 			if (null != arrow) {
@@ -398,7 +457,7 @@ public class UpdaterView extends ViewGroup {
 		@Override
 		public void onUpdating(View root) {
 			TextView text = (TextView)root.findViewById(R.id.update_text);
-			text.setText("Updating...");
+			text.setText(R.string.updating);
 
 			View arrow = root.findViewById(R.id.update_arrow);
 			if (null != arrow) {
@@ -413,9 +472,9 @@ public class UpdaterView extends ViewGroup {
 		}
 
 		@Override
-		public void onEndUpdating(View root) {
+		public void onDidUpdate(View root) {
 			TextView text = (TextView)root.findViewById(R.id.update_text);
-			text.setText("Pull down to refresh...");
+			text.setText(R.string.pulldown_to_refresh);
 
 			View arrow = root.findViewById(R.id.update_arrow);
 			if (null != arrow) {
