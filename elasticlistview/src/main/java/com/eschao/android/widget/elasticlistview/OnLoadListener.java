@@ -22,8 +22,8 @@ package com.eschao.android.widget.elasticlistview;
  */
 public interface OnLoadListener {
 
-	/**
-	 * Handles loading operation
-	 */
-	void onLoad();
+    /**
+     * Handles loading operation
+     */
+    void onLoad();
 }

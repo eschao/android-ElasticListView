@@ -22,18 +22,18 @@ package com.eschao.android.widget.elasticlistview;
  */
 public enum VerticalAlignment {
 
-	/**
-	 * The content view is at the top of its parent view
-	 */
-	TOP,
-	
-	/**
-	 * The content view is center in its parent view
-	 */
-	CENTER,
-	
-	/**
-	 * The content view is at the bottom of its parent view
-	 */
-	BOTTOM
+    /**
+     * The content view is at the top of its parent view
+     */
+    TOP,
+    
+    /**
+     * The content view is center in its parent view
+     */
+    CENTER,
+    
+    /**
+     * The content view is at the bottom of its parent view
+     */
+    BOTTOM
 }

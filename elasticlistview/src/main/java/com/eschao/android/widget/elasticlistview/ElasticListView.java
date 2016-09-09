@@ -74,41 +74,41 @@ import com.eschao.android.widget.elasticlistview.UpdateHeader.*;
  * </ul>
  * <p>XML layout example:</p>
  * <pre>
- * 		&lt;com...elasticlistview.ElasticListView
- * 		xmlns:android="http://schemas.android.com/apk/res/android"
- *			xmlns:tools="http://schemas.android.com/tools"
- *			android:layout_width="match_parent"
- *			android:layout_height="match_parent"
- *			android:background="@android:color/white"
- *			android:id="@+id/elasticList"&gt;
+ *      &lt;com...elasticlistview.ElasticListView
+ *      xmlns:android="http://schemas.android.com/apk/res/android"
+ *          xmlns:tools="http://schemas.android.com/tools"
+ *          android:layout_width="match_parent"
+ *          android:layout_height="match_parent"
+ *          android:background="@android:color/white"
+ *          android:id="@+id/elasticList"&gt;
  *
- *		&lt;/com...elasticlistview.ElasticListView&gt;
+ *      &lt;/com...elasticlistview.ElasticListView&gt;
  * </pre>
  * <p>Codes example:</p>
  * <pre>
- * 		ElasticListView mListView;
+ *      ElasticListView mListView;
  *
- * 		protected void onCreate(Bundle savedInstanceState) {
- * 			...
- * 			mListView = (ElasticListView)findViewById(R.id.elasticList);
- * 			mListView.setOnUpdateListener(this);
- *			mListView.setOnLoadListener(this);
- *			mListView.getUpdateHeader().setAlignment(VerticalAlignment.CENTER);
- *			mListView.getLoadFooter()
+ *      protected void onCreate(Bundle savedInstanceState) {
+ *          ...
+ *          mListView = (ElasticListView)findViewById(R.id.elasticList);
+ *          mListView.setOnUpdateListener(this);
+ *          mListView.setOnLoadListener(this);
+ *          mListView.getUpdateHeader().setAlignment(VerticalAlignment.CENTER);
+ *          mListView.getLoadFooter()
  *                   .setAlignment(VerticalAlignment.CENTER);
- *			         .setLoadAction(LoadAction.AUTO_LOAD);
- *			mListView.enableLoadFooter(true);
- *			...
- *			<some ListView setting, e.g: set adapter, set item click listener>
- *		}
+ *                   .setLoadAction(LoadAction.AUTO_LOAD);
+ *          mListView.enableLoadFooter(true);
+ *          ...
+ *          <some ListView setting, e.g: set adapter, set item click listener>
+ *      }
  *
- *		// If you need to automatically run updating operation once the ListView
- *		// is shown,
- *		// you can call requestUpdate() here or in onStart()
- *		protected void onResume() {
- *			super.onResume();
- *			mListView.requestUpdate();
- *		}
+ *      // If you need to automatically run updating operation once the ListView
+ *      // is shown,
+ *      // you can call requestUpdate() here or in onStart()
+ *      protected void onResume() {
+ *          super.onResume();
+ *          mListView.requestUpdate();
+ *      }
  * </pre>
  *
  * @see android.widget.ListView
@@ -122,113 +122,113 @@ import com.eschao.android.widget.elasticlistview.UpdateHeader.*;
  */
 public class ElasticListView extends ListView {
 
-	// defines messages
-	final static int MSG_SET_UPDATE_HEADER_HEIGHT   = 0;
-	final static int MSG_DID_UPDATE                 = 1;
-	final static int MSG_SET_LOAD_FOOTER_HEIGHT     = 2;
-	final static int MSG_DID_LOAD                   = 3;
+    // defines messages
+    final static int MSG_SET_UPDATE_HEADER_HEIGHT   = 0;
+    final static int MSG_DID_UPDATE                 = 1;
+    final static int MSG_SET_LOAD_FOOTER_HEIGHT     = 2;
+    final static int MSG_DID_LOAD                   = 3;
 
-	int 				mLastY;
-	UpdateHeader        mUpdateHeader;
-	LoadFooter          mLoadFooter;
-	Scroller			mScroller;
-	OnUpdateListener	mOnUpdateListener;
-	OnLoadListener		mOnLoadListener;
-	boolean				mUpdateRequest;
-	boolean            mEnableLoader;
-	Typeface			mFont;
+    int                 mLastY;
+    UpdateHeader        mUpdateHeader;
+    LoadFooter          mLoadFooter;
+    Scroller            mScroller;
+    OnUpdateListener    mOnUpdateListener;
+    OnLoadListener      mOnLoadListener;
+    boolean             mUpdateRequest;
+    boolean            mEnableLoader;
+    Typeface            mFont;
 
-	/**
-	 * Constructor
-	 *
-	 * @param context	Android context
-	 */
-	public ElasticListView(Context context) {
-		super(context);
-		init();
-	}
+    /**
+     * Constructor
+     *
+     * @param context   Android context
+     */
+    public ElasticListView(Context context) {
+        super(context);
+        init();
+    }
 
-	/**
-	 * Constructor
-	 *
-	 * @param context	Android context
-	 * @param attrs		Attributes of ListView
-	 */
-	public ElasticListView(Context context, AttributeSet attrs) {
-		super(context, attrs);
-		init();
-	}
+    /**
+     * Constructor
+     *
+     * @param context   Android context
+     * @param attrs     Attributes of ListView
+     */
+    public ElasticListView(Context context, AttributeSet attrs) {
+        super(context, attrs);
+        init();
+    }
 
-	/**
-	 * Constructor
-	 *
-	 * @param context	Android context
-	 * @param attrs		Attributes of ListView
-	 * @param defStyle	Styles of ListView
-	 */
-	public ElasticListView(Context context, AttributeSet attrs, int defStyle) {
-		super(context, attrs, defStyle);
-		init();
-	}
+    /**
+     * Constructor
+     *
+     * @param context   Android context
+     * @param attrs     Attributes of ListView
+     * @param defStyle  Styles of ListView
+     */
+    public ElasticListView(Context context, AttributeSet attrs, int defStyle) {
+        super(context, attrs, defStyle);
+        init();
+    }
 
-	/**
-	 * Sets updating listener
-	 *
-	 * @param l Updating listener
+    /**
+     * Sets updating listener
+     *
+     * @param l Updating listener
      * @return self
-	 */
-	public ElasticListView setOnUpdateListener(OnUpdateListener l) {
-		mOnUpdateListener = l;
+     */
+    public ElasticListView setOnUpdateListener(OnUpdateListener l) {
+        mOnUpdateListener = l;
         return this;
-	}
+    }
 
-	/**
-	 * Sets loading listener
-	 *
-	 * @param l Loading listener
-	 */
-	public ElasticListView setOnLoadListener(OnLoadListener l) {
-		mOnLoadListener = l;
+    /**
+     * Sets loading listener
+     *
+     * @param l Loading listener
+     */
+    public ElasticListView setOnLoadListener(OnLoadListener l) {
+        mOnLoadListener = l;
         return this;
-	}
+    }
 
-	/**
-	 * Notifies the updating is completed
-	 * <p>When your updating task is finished, you should call it to notify
+    /**
+     * Notifies the updating is completed
+     * <p>When your updating task is finished, you should call it to notify
      * ElasticListView to accordingly change the status of header view</p>
-	 */
-	public void notifyUpdated() {
-		mHandler.sendEmptyMessage(MSG_DID_UPDATE);
-	}
+     */
+    public void notifyUpdated() {
+        mHandler.sendEmptyMessage(MSG_DID_UPDATE);
+    }
 
-	/**
-	 * Notifies the loading is completed
-	 * <p>When your loading task is finished, you should call it to notify
+    /**
+     * Notifies the loading is completed
+     * <p>When your loading task is finished, you should call it to notify
      * ElasticListView to accordingly change the status of footer view</p>
-	 */
-	public void notifyLoaded() {
-		mHandler.sendEmptyMessage(MSG_DID_LOAD);
-	}
+     */
+    public void notifyLoaded() {
+        mHandler.sendEmptyMessage(MSG_DID_LOAD);
+    }
 
-	/**
-	 * Sets listener for updating state changes
-	 *
-	 * @param l Listener
-	 */
-	public ElasticListView setOnUpdateStateListener(OnUpdateStateListener l) {
-		mUpdateHeader.setOnUpdateStateListener(l);
+    /**
+     * Sets listener for updating state changes
+     *
+     * @param l Listener
+     */
+    public ElasticListView setOnUpdateStateListener(OnUpdateStateListener l) {
+        mUpdateHeader.setOnUpdateStateListener(l);
         return this;
-	}
+    }
 
-	/**
-	 * Sets listener for loading state changes
-	 *
-	 * @param l Listener
-	 */
-	public ElasticListView setOnLoadStateListener(OnLoadStateListener l) {
-		mLoadFooter.setOnLoadStateListener(l);
+    /**
+     * Sets listener for loading state changes
+     *
+     * @param l Listener
+     */
+    public ElasticListView setOnLoadStateListener(OnLoadStateListener l) {
+        mLoadFooter.setOnLoadStateListener(l);
         return this;
-	}
+    }
 
     /**
      * Gets update header
@@ -253,353 +253,353 @@ public class ElasticListView extends ListView {
      *
      * @param tf Font object
      */
-	public ElasticListView setFont(Typeface tf) {
-		mFont = tf;
-		if (null != mFont) {
-			setFont(mUpdateHeader);
-			setFont(mLoadFooter);
-		}
+    public ElasticListView setFont(Typeface tf) {
+        mFont = tf;
+        if (null != mFont) {
+            setFont(mUpdateHeader);
+            setFont(mLoadFooter);
+        }
 
         return this;
-	}
+    }
 
-	/**
-	 * Requests a manual updating operation
+    /**
+     * Requests a manual updating operation
      *
-	 * <p>The updating operation will be only executed once when the ListView is
+     * <p>The updating operation will be only executed once when the ListView is
      * shown, The operation will be preserved if the ListView is not ready and
      * be executing later. You can call it in some startup points to achieve an
-	 * automatic updating once the ListView is displayed</p>
-	 */
-	public ElasticListView requestUpdate() {
-		if (null == mUpdateHeader.getChildView()
+     * automatic updating once the ListView is displayed</p>
+     */
+    public ElasticListView requestUpdate() {
+        if (null == mUpdateHeader.getChildView()
             || null != mOnUpdateListener) {
             // will update later
-			mUpdateRequest = true;
-		}
+            mUpdateRequest = true;
+        }
         else {
-			final int minHeight = mUpdateHeader.getMinHeight();
-			mUpdateHeader.setHeight(minHeight);
-			mUpdateHeader.setUpdating(true);
-			mOnUpdateListener.onUpdate();
-		}
+            final int minHeight = mUpdateHeader.getMinHeight();
+            mUpdateHeader.setHeight(minHeight);
+            mUpdateHeader.setUpdating(true);
+            mOnUpdateListener.onUpdate();
+        }
 
         return this;
-	}
+    }
 
-	/**
-	 * Is load footer enabled
-	 * <p>Sometimes you don't want to show load footer and enable loading
+    /**
+     * Is load footer enabled
+     * <p>Sometimes you don't want to show load footer and enable loading
      * function, you can disable it by {@link #enableLoadFooter(boolean)}. The
      * default value is <strong>False</strong>.</p>
-	 *
-	 * @return True if enabled
-	 */
-	public boolean isLoadFooterEnabled() {
-		return mEnableLoader;
-	}
+     *
+     * @return True if enabled
+     */
+    public boolean isLoadFooterEnabled() {
+        return mEnableLoader;
+    }
 
-	/**
-	 * Enables or disables load footer
-	 *
-	 * @param enable True if enable load footer
-	 */
-	public ElasticListView enableLoadFooter(boolean enable) {
-		mEnableLoader = enable;
+    /**
+     * Enables or disables load footer
+     *
+     * @param enable True if enable load footer
+     */
+    public ElasticListView enableLoadFooter(boolean enable) {
+        mEnableLoader = enable;
         return this;
-	}
+    }
 
-	/**
-	 * Overrides {@link android.view.ViewGroup#dispatchDraw(Canvas)} to run a
+    /**
+     * Overrides {@link android.view.ViewGroup#dispatchDraw(Canvas)} to run a
      * manual updating operation if requested
-	 */
-	@Override
-	public void dispatchDraw(Canvas canvas) {
-		super.dispatchDraw(canvas);
+     */
+    @Override
+    public void dispatchDraw(Canvas canvas) {
+        super.dispatchDraw(canvas);
 
-		// if request a manual updating, run it
-		if (mUpdateRequest) {
-			mUpdateRequest = false;
+        // if request a manual updating, run it
+        if (mUpdateRequest) {
+            mUpdateRequest = false;
 
-			if (null != mOnUpdateListener) {
-				mUpdateHeader.setHeight(mUpdateHeader.getMinHeight());
-				mUpdateHeader.setUpdating(true);
-				mOnUpdateListener.onUpdate();
-			}
-		}
-	}
+            if (null != mOnUpdateListener) {
+                mUpdateHeader.setHeight(mUpdateHeader.getMinHeight());
+                mUpdateHeader.setUpdating(true);
+                mOnUpdateListener.onUpdate();
+            }
+        }
+    }
 
-	/**
-	 * Overrides {@link android.view.View#dispatchTouchEvent(MotionEvent)}
-	 */
-	@Override
-	public boolean dispatchTouchEvent(MotionEvent e) {
-		int action 	= e.getAction();
-		int y		= (int)e.getRawY();
+    /**
+     * Overrides {@link android.view.View#dispatchTouchEvent(MotionEvent)}
+     */
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent e) {
+        int action  = e.getAction();
+        int y       = (int)e.getRawY();
 
-		// handle ACTION_DOWN to save the y position, we can not do it in
+        // handle ACTION_DOWN to save the y position, we can not do it in
         // onTouchEvent() since the user defined click listener will intercept
         // it before onTouchEvent()
-		if (MotionEvent.ACTION_DOWN == action) {
-			mLastY = y;
+        if (MotionEvent.ACTION_DOWN == action) {
+            mLastY = y;
 
-			// stop scroller
-			if (!mScroller.isFinished()) {
-				mScroller.abortAnimation();
-			}
-		}
+            // stop scroller
+            if (!mScroller.isFinished()) {
+                mScroller.abortAnimation();
+            }
+        }
 
-		return super.dispatchTouchEvent(e);
-	}
+        return super.dispatchTouchEvent(e);
+    }
 
-	/**
-	 * Overrides {@link android.view.View#onTouchEvent(MotionEvent)}
-	 */
-	@Override
-	public boolean onTouchEvent(MotionEvent e) {
-		int action 	= e.getAction();
-		int y		= (int)e.getRawY();
+    /**
+     * Overrides {@link android.view.View#onTouchEvent(MotionEvent)}
+     */
+    @Override
+    public boolean onTouchEvent(MotionEvent e) {
+        int action  = e.getAction();
+        int y       = (int)e.getRawY();
 
-		switch (action) {
-		case MotionEvent.ACTION_DOWN:
-			// do nothing, we handled it in dispatchTouchEvent()
-			break;
+        switch (action) {
+        case MotionEvent.ACTION_DOWN:
+            // do nothing, we handled it in dispatchTouchEvent()
+            break;
 
-		case MotionEvent.ACTION_MOVE:
-			int deltaY = y-mLastY;
+        case MotionEvent.ACTION_MOVE:
+            int deltaY = y-mLastY;
 
-			// is operating on update header or is update header visible or is
+            // is operating on update header or is update header visible or is
             // it can be showing?
-			if (mLoadFooter.isFinished() &&
-				(mUpdateHeader.isHeightVisible()
+            if (mLoadFooter.isFinished() &&
+                (mUpdateHeader.isHeightVisible()
                  || canShowUpdaterView(deltaY))) {
-				// set half of movements as its height to simulate a elastic
+                // set half of movements as its height to simulate a elastic
                 // effect
-				mUpdateHeader.setHeightBy(deltaY/2);
-				mLastY = y;
+                mUpdateHeader.setHeightBy(deltaY/2);
+                mLastY = y;
 
-				// don't let parent continue to handle this message
-				return true;
-			}
+                // don't let parent continue to handle this message
+                return true;
+            }
 
-			// is operating on update header or is update header visible or is
+            // is operating on update header or is update header visible or is
             // it can be showing?
-			if (mEnableLoader && mUpdateHeader.isFinished() &&
-				(mLoadFooter.isHeightVisible() || canShowLoaderView(deltaY))) {
-				// set half of movements as its height to simulate a elastic
+            if (mEnableLoader && mUpdateHeader.isFinished() &&
+                (mLoadFooter.isHeightVisible() || canShowLoaderView(deltaY))) {
+                // set half of movements as its height to simulate a elastic
                 // effect
-				mLoadFooter.setHeightBy(-deltaY/2);
+                mLoadFooter.setHeightBy(-deltaY/2);
 
-				// if AUTO_LOAD mode is set, execute loading operation
-				if (LoadAction.AUTO_LOAD == mLoadFooter.getLoadAction() &&
-					null != mOnLoadListener && !mLoadFooter.isLoading()) {
-					mLoadFooter.setLoading(true);
-					mOnLoadListener.onLoad();
-				}
+                // if AUTO_LOAD mode is set, execute loading operation
+                if (LoadAction.AUTO_LOAD == mLoadFooter.getLoadAction() &&
+                    null != mOnLoadListener && !mLoadFooter.isLoading()) {
+                    mLoadFooter.setLoading(true);
+                    mOnLoadListener.onLoad();
+                }
 
-				if (mLoadFooter.getCurHeight() > 0) {
-					// a magic function: setSelection can help us add footer in
+                if (mLoadFooter.getCurHeight() > 0) {
+                    // a magic function: setSelection can help us add footer in
                     // current showing list and make sure it can be seen on
                     // screen
-					setSelection(getCount());
-					mLastY = y;
-				}
-				return true;
-			}
-			break;
+                    setSelection(getCount());
+                    mLastY = y;
+                }
+                return true;
+            }
+            break;
 
-		case MotionEvent.ACTION_UP:
-			if (mUpdateHeader.isHeightVisible()) {
-				// check if can execute updating
-				if (mUpdateHeader.canUpdate() && null != mOnUpdateListener) {
-					mUpdateHeader.setUpdating(true);
-					mOnUpdateListener.onUpdate();
-				}
+        case MotionEvent.ACTION_UP:
+            if (mUpdateHeader.isHeightVisible()) {
+                // check if can execute updating
+                if (mUpdateHeader.canUpdate() && null != mOnUpdateListener) {
+                    mUpdateHeader.setUpdating(true);
+                    mOnUpdateListener.onUpdate();
+                }
 
-				// whatever if the updating is executed or header need to be
+                // whatever if the updating is executed or header need to be
                 // hidden, there is a distance for header to springback, compute
                 // it and start a scroll controller
-				final int dy = mUpdateHeader.getBounceHeight();
-				mScroller.startScroll(0, mUpdateHeader.getCurHeight(), 0, dy,
+                final int dy = mUpdateHeader.getBounceHeight();
+                mScroller.startScroll(0, mUpdateHeader.getCurHeight(), 0, dy,
                                       1000);
-				mHandler.sendEmptyMessage(MSG_SET_UPDATE_HEADER_HEIGHT);
-				return true;
-			}
+                mHandler.sendEmptyMessage(MSG_SET_UPDATE_HEADER_HEIGHT);
+                return true;
+            }
 
-			if (mLoadFooter.isHeightVisible()) {
-				// check if can execute updating, as we explain in ACTION_MOVE,
+            if (mLoadFooter.isHeightVisible()) {
+                // check if can execute updating, as we explain in ACTION_MOVE,
                 // we should use the real visible height of footer to judge if
                 // the loading operation can be executing
-				if (mLoadFooter.canLoad()
+                if (mLoadFooter.canLoad()
                     && !mLoadFooter.isClickable()
                     && null != mOnLoadListener) {
-					mLoadFooter.setLoading(true);
-					mOnLoadListener.onLoad();
-				}
+                    mLoadFooter.setLoading(true);
+                    mOnLoadListener.onLoad();
+                }
 
-				// compute bounce distance and start a scroll controller
-				final int dy = mLoadFooter.getBounceHeight();
-				mScroller.startScroll(0, mLoadFooter.getCurHeight(), 0, dy,
+                // compute bounce distance and start a scroll controller
+                final int dy = mLoadFooter.getBounceHeight();
+                mScroller.startScroll(0, mLoadFooter.getCurHeight(), 0, dy,
                                       1000);
-				mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
-				return true;
-			}
-			break;
-		}
+                mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
+                return true;
+            }
+            break;
+        }
 
-		// remember current Y position and let parent continue to handle
+        // remember current Y position and let parent continue to handle
         // motion event
-		mLastY = y;
-		return super.onTouchEvent(e);
-	}
+        mLastY = y;
+        return super.onTouchEvent(e);
+    }
 
-	/**
-	 * Overrides {@link android.view.View#overScrollBy(int, int, int, int, int,
+    /**
+     * Overrides {@link android.view.View#overScrollBy(int, int, int, int, int,
      * int, int, int, boolean)} to show update header and load footer if the
      * scrolling is over the boundary of ListView
-	 */
+     */
     @Override
-	protected boolean overScrollBy(int deltaX, int deltaY, int scrollX,
+    protected boolean overScrollBy(int deltaX, int deltaY, int scrollX,
                                    int scrollY, int scrollRangeX,
                                    int scrollRangeY, int maxOverScrollX,
                                    int maxOverScrollY, boolean isTouchEvent) {
 
-    	// the deltaY < 0 means the scrolling is from top to bottom
-    	if (deltaY < 0 && mScroller.isFinished() && mLoadFooter.isFinished()
-    		&& !mUpdateHeader.isHeightVisible()) {
-			mUpdateHeader.setHeightBy(-deltaY);
+        // the deltaY < 0 means the scrolling is from top to bottom
+        if (deltaY < 0 && mScroller.isFinished() && mLoadFooter.isFinished()
+            && !mUpdateHeader.isHeightVisible()) {
+            mUpdateHeader.setHeightBy(-deltaY);
 
-			// check if we can run updating operation
-			if (mUpdateHeader.canUpdate() && null != mOnUpdateListener) {
-				mUpdateHeader.setUpdating(true);
-				mOnUpdateListener.onUpdate();
-			}
+            // check if we can run updating operation
+            if (mUpdateHeader.canUpdate() && null != mOnUpdateListener) {
+                mUpdateHeader.setUpdating(true);
+                mOnUpdateListener.onUpdate();
+            }
 
-			// compute bounce distance and start a scroll controller
-			final int dy = mUpdateHeader.getBounceHeight();
-			mScroller.startScroll(0, mUpdateHeader.getCurHeight(), 0, dy, 1000);
-			mHandler.sendEmptyMessage(MSG_SET_UPDATE_HEADER_HEIGHT);
-    	}
+            // compute bounce distance and start a scroll controller
+            final int dy = mUpdateHeader.getBounceHeight();
+            mScroller.startScroll(0, mUpdateHeader.getCurHeight(), 0, dy, 1000);
+            mHandler.sendEmptyMessage(MSG_SET_UPDATE_HEADER_HEIGHT);
+        }
 
-    	// the deltaY > 0 means the scrolling is from bottom to top
-    	if (deltaY > 0 && mEnableLoader && mUpdateHeader.isFinished()
-    		&& !mLoadFooter.isHeightVisible() && mScroller.isFinished()
+        // the deltaY > 0 means the scrolling is from bottom to top
+        if (deltaY > 0 && mEnableLoader && mUpdateHeader.isFinished()
+            && !mLoadFooter.isHeightVisible() && mScroller.isFinished()
             && isItemFilledScreen()) {
-    		mLoadFooter.setHeightBy(deltaY);
+            mLoadFooter.setHeightBy(deltaY);
 
-    		// use the magic function to make sure footer is added in current
+            // use the magic function to make sure footer is added in current
             // showing view list
-			if (mLoadFooter.getCurHeight() > 0) {
-				setSelection(getCount());
-			}
+            if (mLoadFooter.getCurHeight() > 0) {
+                setSelection(getCount());
+            }
 
-			// check if we can run loading operations
-			if (null != mOnLoadListener && !mLoadFooter.isLoading() &&
-				(LoadAction.AUTO_LOAD == mLoadFooter.getLoadAction() ||
-				(mLoadFooter.canLoad() && !mLoadFooter.isClickable()))) {
-				mLoadFooter.setLoading(true);
-				mOnLoadListener.onLoad();
-			}
+            // check if we can run loading operations
+            if (null != mOnLoadListener && !mLoadFooter.isLoading() &&
+                (LoadAction.AUTO_LOAD == mLoadFooter.getLoadAction() ||
+                (mLoadFooter.canLoad() && !mLoadFooter.isClickable()))) {
+                mLoadFooter.setLoading(true);
+                mOnLoadListener.onLoad();
+            }
 
-			// compute bounce distance and start a scroll controller
-			final int dy = mLoadFooter.getBounceHeight();
-			mScroller.startScroll(0, mLoadFooter.getCurHeight(), 0, dy, 1000);
-			mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
-    	}
+            // compute bounce distance and start a scroll controller
+            final int dy = mLoadFooter.getBounceHeight();
+            mScroller.startScroll(0, mLoadFooter.getCurHeight(), 0, dy, 1000);
+            mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
+        }
 
-		return false;
+        return false;
     }
 
-	/**
-	 * initialize
-	 */
-	private void init() {
-		// init update header
-		Context context = getContext();
-		mUpdateHeader = new UpdateHeader(getContext());
-		View view = LayoutInflater.from(context).inflate(R.layout.update_header,
+    /**
+     * initialize
+     */
+    private void init() {
+        // init update header
+        Context context = getContext();
+        mUpdateHeader = new UpdateHeader(getContext());
+        View view = LayoutInflater.from(context).inflate(R.layout.update_header,
                                                          null);
-		mUpdateHeader.addView(view);
-		addHeaderView(mUpdateHeader);
+        mUpdateHeader.addView(view);
+        addHeaderView(mUpdateHeader);
 
-		// init load footer
-		mLoadFooter = new LoadFooter(getContext());
-		view = LayoutInflater.from(context).inflate(R.layout.load_footer, null);
-		mLoadFooter.addView(view);
-		addFooterView(mLoadFooter);
-		mLoadFooter.setOnClickListener(mLoadClickListener);
+        // init load footer
+        mLoadFooter = new LoadFooter(getContext());
+        view = LayoutInflater.from(context).inflate(R.layout.load_footer, null);
+        mLoadFooter.addView(view);
+        addFooterView(mLoadFooter);
+        mLoadFooter.setOnClickListener(mLoadClickListener);
 
-		// others
-		mScroller 			= new Scroller(context);
-		mUpdateRequest 		= false;
-		mEnableLoader       = false;
-		mFont				= null;
-		setFooterDividersEnabled(false);
-		setHeaderDividersEnabled(false);
-	}
+        // others
+        mScroller           = new Scroller(context);
+        mUpdateRequest      = false;
+        mEnableLoader       = false;
+        mFont               = null;
+        setFooterDividersEnabled(false);
+        setHeaderDividersEnabled(false);
+    }
 
-	/**
-	 * Checks if the update header can be showing?
-	 *
-	 * @param 	deltaY delta vertical movement
-	 * @return	True if it can be showing
-	 */
-	private boolean canShowUpdaterView(int deltaY) {
-		final int firstVisibleItem	= getFirstVisiblePosition();
-		final int fistViewTop		= getChildAt(0).getTop();
-		final int topPadding		= getListPaddingTop();
-		return (firstVisibleItem == 0
+    /**
+     * Checks if the update header can be showing?
+     *
+     * @param   deltaY delta vertical movement
+     * @return  True if it can be showing
+     */
+    private boolean canShowUpdaterView(int deltaY) {
+        final int firstVisibleItem  = getFirstVisiblePosition();
+        final int fistViewTop       = getChildAt(0).getTop();
+        final int topPadding        = getListPaddingTop();
+        return (firstVisibleItem == 0
                 && fistViewTop >= topPadding
                 && deltaY > 0);
-	}
+    }
 
-	/**
-	 * Checks if the load footer can be showing?
-	 *
-	 * @param 	deltaY delta vertical movement
-	 * @return	True if it can be showing
-	 */
-	private boolean canShowLoaderView(int deltaY) {
-		final int itemsCount = getCount();
-		// won't show footer if no item
-		if (itemsCount < 0) {
+    /**
+     * Checks if the load footer can be showing?
+     *
+     * @param   deltaY delta vertical movement
+     * @return  True if it can be showing
+     */
+    private boolean canShowLoaderView(int deltaY) {
+        final int itemsCount = getCount();
+        // won't show footer if no item
+        if (itemsCount < 0) {
             return false;
         }
 
-		final int viewsCount		= getChildCount();
-		final int firstVisibleItem	= getFirstVisiblePosition();
-		final int lastVisibleItem	= getLastVisiblePosition();
-		// won't show footer if the list items can not fill the screen
-		if (lastVisibleItem-firstVisibleItem+1 >= itemsCount)
-			return false;
+        final int viewsCount        = getChildCount();
+        final int firstVisibleItem  = getFirstVisiblePosition();
+        final int lastVisibleItem   = getLastVisiblePosition();
+        // won't show footer if the list items can not fill the screen
+        if (lastVisibleItem-firstVisibleItem+1 >= itemsCount)
+            return false;
 
-		final int lastViewBottom	= getChildAt(viewsCount-1).getBottom();
-		final int listBottom		= getHeight()-getListPaddingBottom();
-		return (lastVisibleItem >= itemsCount-1
+        final int lastViewBottom    = getChildAt(viewsCount-1).getBottom();
+        final int listBottom        = getHeight()-getListPaddingBottom();
+        return (lastVisibleItem >= itemsCount-1
                 && lastViewBottom == listBottom
                 && deltaY < 0);
-	}
+    }
 
-	/**
-	 * Gets the visible height of load footer
-	 */
-	private final boolean isItemFilledScreen() {
-		return getLastVisiblePosition()-getFirstVisiblePosition()+1 < getCount();
-	}
+    /**
+     * Gets the visible height of load footer
+     */
+    private final boolean isItemFilledScreen() {
+        return getLastVisiblePosition()-getFirstVisiblePosition()+1 < getCount();
+    }
 
-	/**
-	 * Is update header visible?
-	 */
-	protected final boolean isUpdateHeaderVisible() {
-		return mUpdateHeader == getChildAt(0);
-	}
+    /**
+     * Is update header visible?
+     */
+    protected final boolean isUpdateHeaderVisible() {
+        return mUpdateHeader == getChildAt(0);
+    }
 
-	/**
-	 * Is load footer visible?
-	 */
-	protected final boolean isLoadFooterVisible() {
-		return mLoadFooter == getChildAt(getChildCount()-1);
-	}
+    /**
+     * Is load footer visible?
+     */
+    protected final boolean isLoadFooterVisible() {
+        return mLoadFooter == getChildAt(getChildCount()-1);
+    }
 
     public final boolean isUpdating() {
         return (mUpdateHeader == getChildAt(0) && mUpdateHeader.getHeight() > 0);
@@ -609,117 +609,117 @@ public class ElasticListView extends ListView {
         return (mLoadFooter == getChildAt(0) && mLoadFooter.getHeight() > 0);
     }
 
-	/**
-	 * Sets font for specified ViewGroup
-	 *
-	 * @param group ViewGroup
-	 */
-	private void setFont(ViewGroup group) {
-		assert(null != mFont);
-		int count = group.getChildCount();
-		for (int i=0; i<count; ++i) {
-			View view = group.getChildAt(i);
-			if (view instanceof TextView) {
-				((TextView)view).setTypeface(mFont);
-			} else if (view instanceof ViewGroup) {
-				setFont((ViewGroup)view);
-			}
-		}
-	}
+    /**
+     * Sets font for specified ViewGroup
+     *
+     * @param group ViewGroup
+     */
+    private void setFont(ViewGroup group) {
+        assert(null != mFont);
+        int count = group.getChildCount();
+        for (int i=0; i<count; ++i) {
+            View view = group.getChildAt(i);
+            if (view instanceof TextView) {
+                ((TextView)view).setTypeface(mFont);
+            } else if (view instanceof ViewGroup) {
+                setFont((ViewGroup)view);
+            }
+        }
+    }
 
-	/**
-	 * Listener for clicking footer to load
-	 */
-	private OnClickListener mLoadClickListener = new OnClickListener() {
-		@Override
-		public void onClick(View v) {
-			if (null != mOnLoadListener) {
-				mLoadFooter.setLoading(true);
-				mOnLoadListener.onLoad();
-			}
-		}
+    /**
+     * Listener for clicking footer to load
+     */
+    private OnClickListener mLoadClickListener = new OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            if (null != mOnLoadListener) {
+                mLoadFooter.setLoading(true);
+                mOnLoadListener.onLoad();
+            }
+        }
 
-	};
+    };
 
-	/**
-	 * Handles messages
-	 */
-	protected Handler mHandler = new Handler(){
-		@Override
-		public void handleMessage(Message msg) {
-			int height = 0;
-			int y = 0;
+    /**
+     * Handles messages
+     */
+    protected Handler mHandler = new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            int height = 0;
+            int y = 0;
 
-			switch(msg.what) {
-			case MSG_SET_UPDATE_HEADER_HEIGHT:
-				// handles the height updating of header
-				mScroller.computeScrollOffset();
-				y = mScroller.getCurrY();
-				mUpdateHeader.setHeight(y);
+            switch(msg.what) {
+            case MSG_SET_UPDATE_HEADER_HEIGHT:
+                // handles the height updating of header
+                mScroller.computeScrollOffset();
+                y = mScroller.getCurrY();
+                mUpdateHeader.setHeight(y);
 
-				if (!mScroller.isFinished()) {
-					if (y <= 0) {
-						mScroller.abortAnimation();
-					}
+                if (!mScroller.isFinished()) {
+                    if (y <= 0) {
+                        mScroller.abortAnimation();
+                    }
                     else if (!isUpdateHeaderVisible()) {
-						mUpdateHeader.setHeight(0);
-					}
+                        mUpdateHeader.setHeight(0);
+                    }
                     else {
-						mHandler.sendEmptyMessage(MSG_SET_UPDATE_HEADER_HEIGHT);
-					}
-				}
-				break;
+                        mHandler.sendEmptyMessage(MSG_SET_UPDATE_HEADER_HEIGHT);
+                    }
+                }
+                break;
 
-			case MSG_DID_UPDATE:
-				if (mUpdateHeader.isUpdating()) {
-					mUpdateHeader.setUpdating(false);
-					// if the height of header is valid, start scroll to
+            case MSG_DID_UPDATE:
+                if (mUpdateHeader.isUpdating()) {
+                    mUpdateHeader.setUpdating(false);
+                    // if the height of header is valid, start scroll to
                     // hide header
-					if (isUpdateHeaderVisible()) {
-						height = mUpdateHeader.getCurHeight();
-						mScroller.startScroll(0, height, 0, -height);
-						mHandler.sendEmptyMessage(MSG_SET_UPDATE_HEADER_HEIGHT);
-					}
+                    if (isUpdateHeaderVisible()) {
+                        height = mUpdateHeader.getCurHeight();
+                        mScroller.startScroll(0, height, 0, -height);
+                        mHandler.sendEmptyMessage(MSG_SET_UPDATE_HEADER_HEIGHT);
+                    }
                     else {
-						mUpdateHeader.setHeight(0);
-					}
-				}
-				break;
+                        mUpdateHeader.setHeight(0);
+                    }
+                }
+                break;
 
-			case MSG_SET_LOAD_FOOTER_HEIGHT:
-				// handles the height updating of footer
-				mScroller.computeScrollOffset();
-				y = mScroller.getCurrY();
-				mLoadFooter.setHeight(y);
+            case MSG_SET_LOAD_FOOTER_HEIGHT:
+                // handles the height updating of footer
+                mScroller.computeScrollOffset();
+                y = mScroller.getCurrY();
+                mLoadFooter.setHeight(y);
 
-				if (!mScroller.isFinished()) {
-					if (y <= 0) {
-						mScroller.abortAnimation();
-					}
+                if (!mScroller.isFinished()) {
+                    if (y <= 0) {
+                        mScroller.abortAnimation();
+                    }
                     else if (!isLoadFooterVisible()) {
-						mLoadFooter.setHeight(0);
-					}
+                        mLoadFooter.setHeight(0);
+                    }
                     else {
-						mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
-					}
-				}
-				break;
+                        mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
+                    }
+                }
+                break;
 
-			case MSG_DID_LOAD:
-				if (mLoadFooter.isLoading()) {
-					mLoadFooter.setLoading(false);
-					// hide footer if need
-					if (isLoadFooterVisible()) {
-						height = mLoadFooter.getCurHeight();
-						mScroller.startScroll(0, height, 0, -height);
-						mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
-					}
+            case MSG_DID_LOAD:
+                if (mLoadFooter.isLoading()) {
+                    mLoadFooter.setLoading(false);
+                    // hide footer if need
+                    if (isLoadFooterVisible()) {
+                        height = mLoadFooter.getCurHeight();
+                        mScroller.startScroll(0, height, 0, -height);
+                        mHandler.sendEmptyMessage(MSG_SET_LOAD_FOOTER_HEIGHT);
+                    }
                     else {
-						mLoadFooter.setHeight(0);
-					}
-				}
-				break;
-			}
-		}
-	};
+                        mLoadFooter.setHeight(0);
+                    }
+                }
+                break;
+            }
+        }
+    };
 }

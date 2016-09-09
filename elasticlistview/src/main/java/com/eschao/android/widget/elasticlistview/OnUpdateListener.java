@@ -22,8 +22,8 @@ package com.eschao.android.widget.elasticlistview;
  */
 public interface OnUpdateListener {
 
-	/**
-	 * Handles updating operation
-	 */
-	void onUpdate();
+    /**
+     * Handles updating operation
+     */
+    void onUpdate();
 }

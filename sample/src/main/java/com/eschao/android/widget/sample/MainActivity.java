@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity
         });*/
 
         mListView.setHorizontalFadingEdgeEnabled(false);
-        //mListView.setAdapter(mEventAdapter);
+        mListView.setAdapter(new MyListAdapter(this));
         mListView.enableLoadFooter(true)
                  .getLoadFooter().setLoadAction(LoadAction.RELEASE_TO_LOAD);
         mListView.setOnUpdateListener(this)
