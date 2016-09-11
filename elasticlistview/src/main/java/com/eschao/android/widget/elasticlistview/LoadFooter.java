@@ -397,12 +397,32 @@ public class LoadFooter extends ViewGroup {
      */
     public interface OnLoadStateListener {
 
+        /**
+         * Pulling up
+         *
+         * @param root Root view of footer content
+         */
         void onPullingUp(View root);
 
+        /**
+         * Will release
+         *
+         * @param root Root view of footer content
+         */
         void onWillRelease(View root);
 
+        /**
+         * Loading
+         *
+         * @param root Root view of footer content
+         */
         void onLoading(View root);
 
+        /**
+         * Did load
+         *
+         * @param root Root view of footer content
+         */
         void onDidLoad(View root);
     }
 

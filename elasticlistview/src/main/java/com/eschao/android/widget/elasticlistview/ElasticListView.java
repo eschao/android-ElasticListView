@@ -260,7 +260,8 @@ public class ElasticListView extends ListView {
                 || null != mOnUpdateListener) {
                 // will update later
                 mUpdateRequest = true;
-            } else {
+            }
+            else {
                 final int minHeight = mUpdateHeader.getMinHeight();
                 mUpdateHeader.setHeight(minHeight);
                 mUpdateHeader.setUpdating(true);
@@ -330,7 +331,8 @@ public class ElasticListView extends ListView {
                 }
                 super.addHeaderView(mUpdateHeader, null, true);
             }
-        } else {
+        }
+        else {
             if (mEnableUpdater) {
                 removeHeaderView(mUpdateHeader);
             }
@@ -651,7 +653,8 @@ public class ElasticListView extends ListView {
      * Gets the visible height of load footer
      */
     private final boolean isItemFilledScreen() {
-        return getLastVisiblePosition()-getFirstVisiblePosition()+1 < getCount();
+        return (getLastVisiblePosition() - getFirstVisiblePosition() + 1)
+                < getCount();
     }
 
     /**
@@ -674,7 +677,8 @@ public class ElasticListView extends ListView {
      * @return true if updating
      */
     public final boolean isUpdating() {
-        return (mUpdateHeader == getChildAt(0) && mUpdateHeader.getHeight() > 0);
+        return (mUpdateHeader == getChildAt(0)
+                && mUpdateHeader.getHeight() > 0);
     }
 
     /**
@@ -699,7 +703,8 @@ public class ElasticListView extends ListView {
             View view = group.getChildAt(i);
             if (view instanceof TextView) {
                 ((TextView)view).setTypeface(mFont);
-            } else if (view instanceof ViewGroup) {
+            }
+            else if (view instanceof ViewGroup) {
                 setFont((ViewGroup)view);
             }
         }
