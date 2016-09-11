@@ -212,26 +212,6 @@ public class ElasticListView extends ListView {
     }
 
     /**
-     * Sets listener for updating state changes
-     *
-     * @param l Listener
-     */
-    public ElasticListView setOnUpdateStateListener(OnUpdateStateListener l) {
-        mUpdateHeader.setOnUpdateStateListener(l);
-        return this;
-    }
-
-    /**
-     * Sets listener for loading state changes
-     *
-     * @param l Listener
-     */
-    public ElasticListView setOnLoadStateListener(OnLoadStateListener l) {
-        mLoadFooter.setOnLoadStateListener(l);
-        return this;
-    }
-
-    /**
      * Gets update header
      *
      * @return {@link UpdateHeader} object

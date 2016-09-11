@@ -174,9 +174,9 @@ public class UpdateHeader extends ViewGroup {
      * @param resId         Resource id of content view
      * @param forceLayout   Force to layout content view
      */
-    public void setContentView(int resId, boolean forceLayout) {
+    public UpdateHeader setContentView(int resId, boolean forceLayout) {
         View view = LayoutInflater.from(getContext()).inflate(resId, null);
-        setContentView(view, forceLayout);
+        return setContentView(view, forceLayout);
     }
 
     /**
