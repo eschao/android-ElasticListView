@@ -30,7 +30,6 @@ import android.widget.Scroller;
 import android.widget.TextView;
 
 import com.eschao.android.widget.elasticlistview.LoadFooter.*;
-import com.eschao.android.widget.elasticlistview.UpdateHeader.*;
 
 /**
  * <p>ElasticListView, like iOS feature, allows you pull down from the top of
@@ -251,8 +250,8 @@ public class ElasticListView extends ListView {
      * shown, The operation will be preserved if the ListView is not ready and
      * be executing later. You can call it in some startup points to achieve an
      * automatic updating once the ListView is displayed</p>
-     * <p>Use {@link enableUpdater(bool)} to make sure update header is enabled
-     * first</p>
+     * <p>Use {@link #enableUpdateHeader(boolean)} to make sure update header is
+     * enabled first</p>
      *
      */
     public ElasticListView requestUpdate() {
@@ -594,7 +593,6 @@ public class ElasticListView extends ListView {
         mLoadFooter = new LoadFooter(getContext());
         view = LayoutInflater.from(context).inflate(R.layout.load_footer, null);
         mLoadFooter.addView(view);
-        //addFooterView(mLoadFooter);
         mLoadFooter.setOnClickListener(mLoadClickListener);
 
         // others
@@ -670,10 +668,20 @@ public class ElasticListView extends ListView {
         return mLoadFooter == getChildAt(getChildCount()-1);
     }
 
+    /**
+     * Is updating?
+     *
+     * @return true if updating
+     */
     public final boolean isUpdating() {
         return (mUpdateHeader == getChildAt(0) && mUpdateHeader.getHeight() > 0);
     }
 
+    /**
+     * Is loading?
+     *
+     * @return true if loading
+     */
     public final boolean isLoading() {
         return (mLoadFooter == getChildAt(getChildCount()-1)
                 && mLoadFooter.getHeight() > 0);
