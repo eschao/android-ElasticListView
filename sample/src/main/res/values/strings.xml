@@ -1,4 +1,13 @@
 <resources>
     <string name="app_name">AndroidWidget-ElasticListView</string>
-    <string name="title_activity_main">MainActivity</string>
+    <string name="title_activity_main">ElasticListView-Sample</string>
+    <string name="menu_auto_load">Auto Load</string>
+    <string name="menu_click_to_load">Click to Load</string>
+    <string name="menu_release_to_load">Release to Load</string>
+    <string name="header_text">This is Header</string>
+    <string name="footer_text">This is Footer</string>
+    <string name="enable_update">Enable Update</string>
+    <string name="enable_load">Enable Load</string>
+    <string name="toast_enable_update">Please disable it after updating is finished!</string>
+    <string name="toast_enable_load">Please disable it after loading is finished!</string>
 </resources>

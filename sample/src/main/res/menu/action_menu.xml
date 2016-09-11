@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <group
+        android:id="@+id/group"
+        android:checkableBehavior="single">
+    <item
+        android:id="@+id/auto_load"
+        android:checked="true"
+        android:title="@string/menu_auto_load"/>
+    <item
+        android:id="@+id/click_to_load"
+        android:title="@string/menu_click_to_load"/>
+    <item
+        android:id="@+id/release_to_load"
+        android:title="@string/menu_release_to_load"/>
+    </group>
+    <item
+        android:id="@+id/enable_updater"
+        android:checkable="true"
+        android:checked="true"
+        android:title="@string/enable_update"/>
+    <item
+        android:id="@+id/enable_loader"
+        android:checkable="true"
+        android:checked="true"
+        android:title="@string/enable_load"/>
+</menu>

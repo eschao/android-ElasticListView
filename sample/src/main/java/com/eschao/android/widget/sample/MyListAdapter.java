@@ -28,7 +28,7 @@ public class MyListAdapter extends BaseAdapter {
         mData = new ArrayList<String>();
         mInflater = LayoutInflater.from(context);
 
-        for (int i=0; i<10; ++i) {
+        for (int i=0; i<20; ++i) {
             mData.add("List Item: " + i);
         }
     }
@@ -57,5 +57,21 @@ public class MyListAdapter extends BaseAdapter {
         TextView textView = (TextView)view.findViewById(R.id.text);
         textView.setText(mData.get(i));
         return view;
+    }
+
+    public void addUpdatedData(String[] data) {
+        for (int i=data.length-1; i>=0; --i) {
+            mData.add(0, data[i]);
+        }
+
+        notifyDataSetChanged();
+    }
+
+    public void addLoadedData(String[] data) {
+        for (int i=0; i<data.length; ++i) {
+            mData.add(data[i]);
+        }
+
+        notifyDataSetChanged();
     }
 }
