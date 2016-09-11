@@ -3,7 +3,7 @@ ElasticListView extends android ListView and allows you pull down from the top o
 
 ## Preview
 
-![updating](images/elasticlistview_updating.png)  ![loading](images/elasticlistview_loading.png)
+![updating](images/elasticlistview_updating.png)        ![loading](images/elasticlistview_loading.png)
 
 ## Installation
 
@@ -29,7 +29,7 @@ dependencies {
 
 1. Use it in layout like android ListView. ElasticListView supports all attributes of android ListView
 
-    #### Example
+    #### Example:
     
     ```xml
             <com.eschao.android.widget.elasticlistview.ElasticListView
@@ -47,7 +47,7 @@ dependencies {
                 android:fadingEdge="none"
             >
     ```
-2. Use it in java codes.
+2. Use it in java codes
 
     #### Example:
     
@@ -84,7 +84,7 @@ dependencies {
     
 4. Noramlly, update and load actions should be run in a separate thread, when these actions are done, you should call the below APIs to notify ElasticListView to change UI accordingly.
 
-    #### Example
+    #### Example:
     
     ```java
         // Notify update is done
@@ -132,13 +132,13 @@ dependencies {
                  .setOnLoadStateListener(stateListener);
     ```
     
-8. There are three load type actions, the default is AUTO_LOAD
+8. There are three load action types, the default is AUTO_LOAD
 
-  * AUTO_LOAD: When the load footer is appeared and touch is released, the `onLoad()` will be called
-  * RELEASE_TO_LOAD: When the load footer is fully appeared and touch is release, the `onLoad()` will be called
-  * CLICK_TO_LOAD: When the load footer is fully appeared and user click it, the `onLoad()` will be called
+  * AUTO_LOAD: when the load footer is appeared and touch is released, the `onLoad()` will be called
+  * RELEASE_TO_LOAD: when the load footer is fully appeared and touch is release, the `onLoad()` will be called
+  * CLICK_TO_LOAD: when the load footer is fully appeared and user click it, the `onLoad()` will be called
   
-    #### Example
+    #### Example:
 
     ```java
         mListView.getLoadFooter()
