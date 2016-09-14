@@ -1,3 +1,5 @@
+[![Android Arsenal](https://img.shields.io/badge/Android%20Arsenal-ElasticListView-green.svg?style=true)](https://android-arsenal.com/details/1/4323)
+
 # ElasticListView
 ElasticListView extends android ListView and allows you pull down from the top of ListView to update data and pull up from the bottom of ListView to load data.
 
@@ -134,9 +136,9 @@ dependencies {
     
 8. There are three load action types, the default is AUTO_LOAD
 
-  * AUTO_LOAD: when the load footer is appeared and touch is released, the `onLoad()` will be called
-  * RELEASE_TO_LOAD: when the load footer is fully appeared and touch is release, the `onLoad()` will be called
-  * CLICK_TO_LOAD: when the load footer is fully appeared and user click it, the `onLoad()` will be called
+  * AUTO_LOAD: when the load footer appears, the `onLoad()` will be called
+  * RELEASE_TO_LOAD: when the load footer fully appears and touch is release, the `onLoad()` will be called
+  * CLICK_TO_LOAD: when the load footer fully appears and user click it, the `onLoad()` will be called
   
     #### Example:
 
